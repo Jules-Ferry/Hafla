@@ -17,12 +17,13 @@
 	"scripts": {
 		"start:dev": "nodemon .",
 		"start": "node .",
-		"lint": "eslint .", 
-    	"lint:fix": "eslint . --fix"
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
 	},
 	"homepage": "https://gitea.azures.fr/azures04/Base-REST-API",
 	"readme": "https://gitea.azures.fr/azures04/Base-REST-API/src/branch/main/README.md",
 	"dependencies": {
+		"better-sqlite3": "^12.8.0",
 		"colors": "^1.4.0",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",

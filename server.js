@@ -7,6 +7,7 @@ const utils = require("./modules/utils")
 const logger = require("./modules/logger")
 const helmet = require("helmet")
 const loader = require("./modules/loader")
+const databaseGlobals = require("./modules/databaseGlobals")
 const DefaultError = require("./errors/DefaultError")
 const path2regex = require("path-to-regexp")
 
@@ -14,6 +15,8 @@ const routes = loader.getRecursiveFiles(path.join(__dirname, "routes"))
 const schemas = loader.getRecursiveFiles(path.join(__dirname, "schemas"))
 
 const schemaRegistry = {}
+
+databaseGlobals.initHafla()
 
 app.use(hpp())
 app.use(helmet())
@@ -117,7 +120,7 @@ for (const route of routes) {
             for (const layer of router.stack) {
                 if (layer.route && layer.route.methods) {
                     const method = Object.keys(layer.route.methods).join(", ").toUpperCase()
-                    const subPath = routePath === "/" ? "" : routePath
+                    const subPath = routePath === "/" ? "" : routePath + layer.route.path
                     logger.log(`${method.cyan} ${subPath.cyan.bold} route registered`, ["WEB", "yellow"])
                 }
             }
