@@ -78,4 +78,8 @@ router.delete("/:memberId/payment", async (req, res) => {
     return res.status(200).send()
 })
 
+router.put("/:memberId/checkIn", async (req, res) => {
+    
+})
+
 module.exports = router

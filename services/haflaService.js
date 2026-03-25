@@ -58,6 +58,7 @@ async function getStudentStatus(memberId) {
     return {
         isRegistered: !!registration,
         hasPaid: registration ? registration.has_paid === 1 : false,
+        isCheckedIn: registration ? registration.is_checked_in === 1 : false,
         registeredAt: registration ? registration.registered_at : null
     }
 }
