@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
-const hafla = require("../../../services/haflaService")
-const { DefaultError } = require("../../../errors/errors")
+const hafla = require("../../../../services/haflaService")
+const { DefaultError } = require("../../../../errors/errors")
 
 router.use((req, res, next) => {
     if (!req.session.user) {
@@ -14,18 +14,14 @@ router.put("/", async (req, res) => {
     const memberId = req.session.user.id
     await hafla.registerStudent(memberId)
     
-    return res.status(201).json({ 
-        success: true
-    })
+    return res.status(201).send()
 })
 
 router.delete("/", async (req, res) => {
     const memberId = req.session.user.id
     await hafla.unregisterStudent(memberId)
     
-    return res.json({ 
-        success: true
-    })
+    return res.status(200).send()
 })
 
 router.get("/", async (req, res) => {

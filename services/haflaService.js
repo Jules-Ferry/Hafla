@@ -1,10 +1,11 @@
 const haflaRepository = require("../repository/hafla")
+const usersRepository = require("../repository/users")
 const { DefaultError } = require("../errors/errors")
 
 async function registerStudent(memberId) {
     const alreadyRegistered = await haflaRepository.isRegistered(memberId)
     if (alreadyRegistered) {
-        throw new DefaultError(400, "Tu es déjà inscrit à la Hafla.", "AlreadyRegistered", "RegistrationException")
+        throw new DefaultError(400, "Tu es déjà inscrit sur Hafla.", "AlreadyRegistered", "RegistrationException")
     }
 
     const count = await haflaRepository.getRegistrationCount() 
@@ -50,17 +51,23 @@ async function getStudentStatus(memberId) {
 }
 
 async function unregisterStudent(memberId) {
-    const registered = await registrationRepo.isRegistered(memberId)
+    const registered = await haflaRepository.isRegistered(memberId)
     if (!registered) {
         throw new DefaultError(404, "Impossible de se désinscrire : aucune réservation trouvée.", "NotRegistered", "RegistrationException")
     }
-
-    const paid = await registrationRepo.hasPaid(memberId)
+    const paid = await haflaRepository.hasPaid(memberId)
     if (paid) {
         throw new DefaultError(403, "Tu as déjà payé ta place. Contacte le CVL pour un remboursement et désinscription.", "AlreadyPaid", "PaymentException")
     }
+    return await haflaRepository.unregister(memberId)
+}
 
-    return await registrationRepo.unregister(memberId)
+async function getUserById(id) {
+    const user = await usersRepository.findMemberById(id)
+    if (!user) {
+        throw new DefaultError(404, "L'élève n'est pas présent sur le registre")
+    }
+    return user
 }
 
 module.exports = {
@@ -68,5 +75,6 @@ module.exports = {
     toggleRegistration,
     updatePaymentStatus,
     getStudentStatus,
-    unregisterStudent
+    unregisterStudent,
+    getUserById
 }

@@ -1,21 +1,6 @@
-# Base-REST-API
+# 🍹 Hafla
 
-A robust, modular, and secure REST API boilerplate built with **Node.js** and **Express**.
-It features a **recursive file loader** for routes and schemas, along with a powerful validation middleware using **Zod**.
+Plateforme d'inscription en ligne pour un évènement nécessitant une pré inscription ainsi qu'un paiement effectué hors de la plateforme.
 
-## 🚀 Features
-
-- **Automated Loading**: Recursively loads routes and validation schemas from the file system.
-- **Strict Validation**: Request bodies and query parameters are validated using [Zod](https://zod.dev/) before reaching the controller.
-- **Clean Architecture**: Separation of concerns with `Routes` (HTTP layer), `Services` (Business logic), and `Schemas` (Validation).
-- **Security First**: Inputs are stripped of unknown fields automatically.
-- **Custom Logger**: Integrated color-coded logging system for development and file logging for production.
-- **Error Handling**: Standardized JSON error responses.
-
-## 📦 Installation
-
-1. **Clone the repository**
-   ```bash
-      git clone https://gitea.azures.fr/azures04/Base-REST-API.git
-      cd Base-REST-API
-   ```
+## 🚀 Fonctionnalités
+Utilisation de l'OAuth2 de Microsoft afin de pouvoir se connecter via l'ENT et couplage avec une base de donnée interne n'ayant pas eu la possibilité de configurer un service sur le CAS de la région.
