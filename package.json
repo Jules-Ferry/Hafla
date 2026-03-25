@@ -24,10 +24,12 @@
 	"readme": "https://gitea.azures.fr/azures04/Base-REST-API/src/branch/main/README.md",
 	"dependencies": {
 		"better-sqlite3": "^12.8.0",
+		"better-sqlite3-session-store": "^0.1.0",
 		"colors": "^1.4.0",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^5.2.1",
+		"express-session": "^1.19.0",
 		"helmet": "^8.1.0",
 		"hpp": "^0.2.3",
 		"path-to-regexp": "^8.3.0",

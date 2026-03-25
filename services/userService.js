@@ -18,7 +18,7 @@ function generateOAuth2Link() {
     params.append("response_mode", "query")
     params.append("nonce", "678910")
     params.append("prompt", "consent")
-    return `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params.toString()}`
+    return `https://login.microsoftonline.com/${process.env.AZUR_IDF_TENANT}/oauth2/v2.0/authorize?${params.toString()}`
 }
 
 async function getMSTokens(code) {
@@ -28,7 +28,7 @@ async function getMSTokens(code) {
     params.append("code", code)
     params.append("redirect_uri", getRedirectUrl())
     params.append("grant_type", "authorization_code")
-    const tokenResponse = await fetch(`https://login.microsoftonline.com/common/oauth2/v2.0/token`, {
+    const tokenResponse = await fetch(`https://login.microsoftonline.com/${process.env.AZUR_IDF_TENANT}/oauth2/v2.0/token`, {
         method: "POST",
         body: params,
         headers: {
@@ -36,7 +36,10 @@ async function getMSTokens(code) {
         }
     })
     const tokens = await tokenResponse.json()
-    return tokens
+    if (!tokens.error) {
+        return tokens
+    }
+    throw new DefaultError(500, tokens.error_description, "", tokens.error)
 }
 
 async function getUserProfile(tokens) {
@@ -64,12 +67,14 @@ async function checkIfUserIsInDb(email) {
     return user
 }
 
-async function registerStudent( ) {
-    
+async function generateLogoutUrl() {
+    const msLogoutUrl = `https://login.microsoftonline.com/${process.env.AZUR_IDF_TENANT}/oauth2/v2.0/logout?post_logout_redirect_uri=${getLogoutRedirectUrl()}`
+    return msLogoutUrl
 }
 
 module.exports = {
     generateOAuth2Link,
     fetchExternalProvider,
-    checkIfUserIsInDb
+    checkIfUserIsInDb,
+    generateLogoutUrl
 }

@@ -1,3 +1,6 @@
+const databaseGlobals = require("./modules/databaseGlobals")
+databaseGlobals.initHafla()
+
 const express = require("express")
 const hpp = require("hpp")
 const app = express()
@@ -7,7 +10,9 @@ const utils = require("./modules/utils")
 const logger = require("./modules/logger")
 const helmet = require("helmet")
 const loader = require("./modules/loader")
-const databaseGlobals = require("./modules/databaseGlobals")
+const session = require("express-session")
+const SqliteStore = require("better-sqlite3-session-store")(session)
+const { hafla } = require("./modules/database")
 const DefaultError = require("./errors/DefaultError")
 const path2regex = require("path-to-regexp")
 
@@ -16,7 +21,22 @@ const schemas = loader.getRecursiveFiles(path.join(__dirname, "schemas"))
 
 const schemaRegistry = {}
 
-databaseGlobals.initHafla()
+app.use(session({
+    store: new SqliteStore({
+        client: hafla, 
+        expired: {
+            clear: true,
+            intervalMs: 900000
+        }
+    }),
+    secret: process.env.SESSION_SECRET || "uXLA8AD998w7T4lqpJmDNwdHRtYlh4Z13GIXPBvHJVMUhNKZ8iaEPxkn",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 24,
+        secure: false
+    }
+}))
 
 app.use(hpp())
 app.use(helmet())
@@ -137,8 +157,8 @@ app.all(/.*/, (req, res, next) => {
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500
-
-    logger.error(err.message, ["API", "red"])
+    
+    logger.error(`${req.method.cyan} ${req.path.cyan.bold} ${err.name}`, ["API", "red"])
 
     if (typeof err.serialize === "function") {
         return res.status(statusCode).json(err.serialize())

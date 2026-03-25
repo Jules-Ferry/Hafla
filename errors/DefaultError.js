@@ -13,6 +13,7 @@ class DefaultError extends Error {
     serialize() {
         return {
             code: this.code,
+            name: this.name,
             message: this.message
         }
     }
