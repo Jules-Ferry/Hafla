@@ -6,6 +6,7 @@ function initHafla() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             member_id INTEGER UNIQUE NOT NULL,
             has_paid INTEGER DEFAULT 0,
+            is_checked_in INTEGER DEFAULT 0,
             registered_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `

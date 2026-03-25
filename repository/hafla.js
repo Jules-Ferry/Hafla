@@ -41,6 +41,16 @@ async function getRegistrationCount() {
     return stmt.get().count
 }
 
+async function setAsCheckedIn(memberId) {
+    const stmt = hafla.prepare(`UPDATE registrations SET is_checked_in = 1 WHERE member_id = ?`)
+    return stmt.run(memberId)
+}
+
+async function setAsUnCheckedIn(memberId) {
+    const stmt = hafla.prepare(`UPDATE registrations SET is_checked_in = 0 WHERE member_id = ?`)
+    return stmt.run(memberId)
+}
+
 module.exports = {
     hasPaid,
     register,
@@ -48,6 +58,8 @@ module.exports = {
     unregister,
     setAsUnpaid,
     isRegistered,
+    setAsCheckedIn,
     getRegistration,
+    setAsUnCheckedIn,
     getRegistrationCount
 }

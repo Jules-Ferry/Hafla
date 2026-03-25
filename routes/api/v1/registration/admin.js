@@ -45,7 +45,6 @@ router.get("/:memberId/ticket", async (req, res) => {
     }
 
     const user = await hafla.getUserById(memberId)
-    console.log(user)
 
     return res.json({
         memberId: parseInt(memberId),
@@ -53,6 +52,30 @@ router.get("/:memberId/ticket", async (req, res) => {
         hasPaid: status.hasPaid,
         registeredAt: status.registeredAt
     })
+})
+
+router.put("/:memberId/payment", async (req, res) => {
+    const { memberId } = req.params
+    const status = await hafla.getStudentStatus(memberId)
+
+    if (!status.isRegistered) {
+        throw new DefaultError(404, "Ticket not found", "Not registered", "NotFoundException")
+    }
+    
+    await hafla.updatePaymentStatus(memberId, true)
+    return res.status(200).send()
+})
+
+router.delete("/:memberId/payment", async (req, res) => {
+    const { memberId } = req.params
+    const status = await hafla.getStudentStatus(memberId)
+
+    if (!status.isRegistered) {
+        throw new DefaultError(404, "Ticket not found", "Not registered", "NotFoundException")
+    }
+
+    await hafla.updatePaymentStatus(memberId, false)
+    return res.status(200).send()
 })
 
 module.exports = router

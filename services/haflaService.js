@@ -2,6 +2,10 @@ const haflaRepository = require("../repository/hafla")
 const usersRepository = require("../repository/users")
 const { DefaultError } = require("../errors/errors")
 
+async function getCurrentRegistrationCount() {
+    return await haflaRepository.getRegistrationCount()
+}
+
 async function registerStudent(memberId) {
     const alreadyRegistered = await haflaRepository.isRegistered(memberId)
     if (alreadyRegistered) {
@@ -33,10 +37,18 @@ async function updatePaymentStatus(memberId, paid = true) {
     if (!registered) {
         throw new DefaultError(404, "L'élève n'est pas inscrit, il ne peut pas payer.", "NotRegistered", "PaymentException")
     }
+    
+    const paymentStatus = await getStudentStatus(memberId)
 
     if (paid) {
+        if (paymentStatus.hasPaid) {
+            throw new DefaultError(409, "Le payment à déjà été effectué", "DuplicatedPayment", "PaymentAlreadyDoneException")
+        }
         return await haflaRepository.setAsPaid(memberId)
     } else {
+        if (!paymentStatus.hasPaid) {
+            throw new DefaultError(409, "Le payment n'à jamais été effectué", "MissingPayment", "PaymentNotDoneException")
+        }
         return await haflaRepository.setAsUnpaid(memberId)
     }
 }
@@ -71,10 +83,11 @@ async function getUserById(id) {
 }
 
 module.exports = {
+    getUserById,
     registerStudent,
-    toggleRegistration,
-    updatePaymentStatus,
     getStudentStatus,
     unregisterStudent,
-    getUserById
+    toggleRegistration,
+    updatePaymentStatus,
+    getCurrentRegistrationCount
 }
