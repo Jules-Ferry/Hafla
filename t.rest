@@ -1,0 +1,2 @@
+DELETE http://localhost:3000/api/v1/registration/admin/998/payment HTTP/1.1
+Cookie: connect.sid=s%3A0TSnCAyl1BbP83JZCdep5XNDltbJVXaf.ODUX9ifnjR7oCm1%2Fuxz1ZLKtsWORjNSsNg9VjPvZdSQ

@@ -9,7 +9,7 @@ function getRedirectUrl() {
     return process.env.AZUR_LOCAL_REDIRECT
 }
 
-function generateOAuth2Link() {
+function generateOAuth2Link(state) {
     const params = new URLSearchParams()
     params.append("client_id", process.env.AZUR_CLIENT_ID)
     params.append("response_type", "code")
@@ -18,6 +18,9 @@ function generateOAuth2Link() {
     params.append("response_mode", "query")
     params.append("nonce", "678910")
     params.append("prompt", "consent")
+    if (state) {
+        params.append("state", state)
+    }
     return `https://login.microsoftonline.com/${process.env.AZUR_IDF_TENANT}/oauth2/v2.0/authorize?${params.toString()}`
 }
 
