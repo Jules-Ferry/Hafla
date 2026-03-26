@@ -39,10 +39,13 @@ router.get("/ticket", async (req, res) => {
         throw new DefaultError(404, "Ticket not found", "Not registered", "NotFoundException")
     }
 
-    return res.json({
+    const ticket = await hafla.generateTicket(memberId)
+
+    return res.status(200).json({
         memberId: memberId,
         fullName: `${req.session.user.first_name} ${req.session.user.last_name}`,
         hasPaid: status.hasPaid,
+        qrdata: ticket || null,
         registeredAt: status.registeredAt
     })
 })

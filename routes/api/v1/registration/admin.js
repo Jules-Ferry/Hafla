@@ -45,11 +45,13 @@ router.get("/:memberId/ticket", async (req, res) => {
     }
 
     const user = await hafla.getUserById(memberId)
+    const ticket = await hafla.generateTicket(memberId)
 
     return res.json({
         memberId: parseInt(memberId),
         fullName: `${user.first_name} ${user.last_name}`,
         hasPaid: status.hasPaid,
+        qrdata: ticket || null,
         registeredAt: status.registeredAt
     })
 })
@@ -79,7 +81,33 @@ router.delete("/:memberId/payment", async (req, res) => {
 })
 
 router.put("/:memberId/checkIn", async (req, res) => {
+    const { memberId } = req.params
+    const status = await hafla.getStudentStatus(memberId)
+
+    if (!status.isRegistered) {
+        throw new DefaultError(404, "Ticket not found", "Not registered", "NotFoundException")
+    }
     
+    await hafla.updateCheckedInStatus(memberId, true)
+    return res.status(200).send()
+})
+
+router.delete("/:memberId/checkIn", async (req, res) => {
+    const { memberId } = req.params
+    const status = await hafla.getStudentStatus(memberId)
+
+    if (!status.isRegistered) {
+        throw new DefaultError(404, "Ticket not found", "Not registered", "NotFoundException")
+    }
+
+    await hafla.updateCheckedInStatus(memberId, false)
+    return res.status(200).send()
+})
+
+router.post("/scan", async (req, res) => {
+    const { token } = req.body
+    const ticketStatus = await hafla.checkTicketValidity(token)
+    return res.status(200).json(ticketStatus)
 })
 
 module.exports = router

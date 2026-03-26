@@ -51,6 +51,27 @@ async function setAsUnCheckedIn(memberId) {
     return stmt.run(memberId)
 }
 
+
+async function getRegistrations(filters = {}) {
+    let sql = `SELECT * FROM registrations WHERE 1=1`
+    const params = []
+
+    if (filters.hasPaid !== undefined) {
+        sql += ` AND has_paid = ?`
+        params.push(filters.hasPaid ? 1 : 0)
+    }
+
+    if (filters.isCheckedIn !== undefined) {
+        sql += ` AND is_checked_in = ?`
+        params.push(filters.isCheckedIn ? 1 : 0)
+    }
+
+    sql += ` ORDER BY id DESC`
+
+    const stmt = hafla.prepare(sql)
+    return stmt.all(...params)
+}
+
 module.exports = {
     hasPaid,
     register,
@@ -61,5 +82,6 @@ module.exports = {
     setAsCheckedIn,
     getRegistration,
     setAsUnCheckedIn,
+    getRegistrations,
     getRegistrationCount
 }

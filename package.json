@@ -32,6 +32,7 @@
 		"express-session": "^1.19.0",
 		"helmet": "^8.1.0",
 		"hpp": "^0.2.3",
+		"jsonwebtoken": "^9.0.3",
 		"path-to-regexp": "^8.3.0",
 		"zod": "^4.2.0"
 	},

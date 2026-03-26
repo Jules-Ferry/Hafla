@@ -15,6 +15,9 @@ const SqliteStore = require("better-sqlite3-session-store")(session)
 const { hafla } = require("./modules/database")
 const DefaultError = require("./errors/DefaultError")
 const path2regex = require("path-to-regexp")
+const keys = require("./modules/keys")
+
+keys.setupKeys()
 
 const routes = loader.getRecursiveFiles(path.join(__dirname, "routes"))
 const schemas = loader.getRecursiveFiles(path.join(__dirname, "schemas"))
@@ -156,7 +159,7 @@ app.all(/.*/, (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500
+    const statusCode = err.code || 500
     
     logger.error(`${req.method.cyan} ${req.path.cyan.bold} ${err.name}`, ["API", "red"])
 
@@ -164,7 +167,7 @@ app.use((err, req, res, next) => {
         return res.status(statusCode).json(err.serialize())
     }
 
-    return res.status(500).json({
+    return res.status(statusCode).json({
         status: "error",
         message: "Internal Server Error"
     })
